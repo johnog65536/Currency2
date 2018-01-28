@@ -1,0 +1,2 @@
+on compile, copy log4j config file back into target/classes
+
