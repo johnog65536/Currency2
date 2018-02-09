@@ -6,7 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class Miner {
-	private static final Logger logger = LogManager.getLogger("TestLogger");
+	private static final Logger logger = LogManager.getLogger("MinerLogger");
 	private BlockChain blockChain;
 	
 	private Transaction genesysTransaction =null;

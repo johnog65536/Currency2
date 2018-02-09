@@ -23,19 +23,15 @@ public class JsonTester extends TestCase {
     {
     	logger.info("Working");
     	
-    	logger.info("Started testing");
     	final Wallet genesysWallet = new Wallet("Genesys Wallet");
     	final Wallet fromWallet = new Wallet("My Source Wallet");
     	final Wallet toWallet = new Wallet("My Destination Wallet");    	
-    	logger.info("wallets created: "); 
 
     	final KeyPair genesysKey = genesysWallet.generateKeyPair("genesysKeyPair");
     	final KeyPair fromKey = fromWallet.generateKeyPair("myFromKeyPair");
     	final KeyPair toKey0 = toWallet.generateKeyPair("myToKeyPair 0");
     	final KeyPair toKey1 = toWallet.generateKeyPair("myToKeyPair 1");
-    	
-    	logger.info("Keys created");
-    	
+    	    	
     	final Transaction genesysTransaction = new Transaction();
     	TransactionOutput genesysOutput = new TransactionOutput(0,1000,genesysKey.getPublicKey());
     	genesysTransaction.addOutput(genesysOutput);
@@ -43,10 +39,8 @@ public class JsonTester extends TestCase {
     	final Miner miner = new Miner();
     	miner.initialise(genesysTransaction);
     	
-    	logger.info("miner intialised with genesys transaction");
     	
 		final String genesysJson = gson.toJson(genesysTransaction);
-		logger.info(genesysJson);
 		
 		final Transaction firstTransaction = new Transaction();
     	final TransactionInput input0= new TransactionInput(0,genesysTransaction.getOutput(0));
@@ -57,23 +51,18 @@ public class JsonTester extends TestCase {
     	firstTransaction.addOutput(output0);
     	firstTransaction.addOutput(output0);
     	
-    	logger.info("first transaction created");
-
 		final String firstTxnJson = gson.toJson(genesysTransaction);
 		logger.info(firstTxnJson);
 		
     	miner.addTransaction(firstTransaction);
     	miner.mine();
 
-    	logger.info("completed first set of mining");
-    	
     	moveMoney(genesysTransaction,toKey0,toKey1,miner);
     	moveMoney(genesysTransaction,toKey0,toKey1,miner);
     	moveMoney(firstTransaction,toKey0,toKey1,miner);
 
     	miner.mine();
 
-    	
     	logger.info("completed second set of mining");
 
 		
@@ -95,8 +84,7 @@ public class JsonTester extends TestCase {
 
     	miner.addTransaction(myTransaction);
     	
-    	logger.info("moneyMoved");
-    	
+ 
     	final String txnJson = gson.toJson(myTransaction);
 		logger.info(txnJson);
 	
