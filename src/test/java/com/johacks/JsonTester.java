@@ -13,6 +13,8 @@ import junit.framework.TestSuite;
 public class JsonTester extends TestCase {
 
 	private static final Logger logger = LogManager.getLogger("JsonLogger");
+	private final GsonBuilder builder = new GsonBuilder();
+	private final Gson gson = builder.create();
 	
     /**
      * Rigourous Test :-)
@@ -42,16 +44,63 @@ public class JsonTester extends TestCase {
     	miner.initialise(genesysTransaction);
     	
     	logger.info("miner intialised with genesys transaction");
+    	
+		final String genesysJson = gson.toJson(genesysTransaction);
+		logger.info(genesysJson);
+		
+		final Transaction firstTransaction = new Transaction();
+    	final TransactionInput input0= new TransactionInput(0,genesysTransaction.getOutput(0));
+    	firstTransaction.addInput(input0);
+    	
+    	final TransactionOutput output0 = new TransactionOutput(0,50,toKey0.getPublicKey());
+    	final TransactionOutput output1 = new TransactionOutput(1,50,toKey1.getPublicKey());
+    	firstTransaction.addOutput(output0);
+    	firstTransaction.addOutput(output0);
+    	
+    	logger.info("first transaction created");
+
+		final String firstTxnJson = gson.toJson(genesysTransaction);
+		logger.info(firstTxnJson);
+		
+    	miner.addTransaction(firstTransaction);
+    	miner.mine();
+
+    	logger.info("completed first set of mining");
+    	
+    	moveMoney(genesysTransaction,toKey0,toKey1,miner);
+    	moveMoney(genesysTransaction,toKey0,toKey1,miner);
+    	moveMoney(firstTransaction,toKey0,toKey1,miner);
+
+    	miner.mine();
 
     	
-		final GsonBuilder builder = new GsonBuilder();
-		final Gson gson = builder.create();
-    	
-		String x = gson.toJson(genesysTransaction);
-		logger.info(x);
+    	logger.info("completed second set of mining");
+
+		
     }
     
     
+    
+        
+    private void moveMoney(Transaction genesysTransaction,KeyPair toKey0,KeyPair toKey1,Miner miner) {
+    	final Transaction myTransaction = new Transaction();
+    	
+    	final TransactionInput input0= new TransactionInput(0,genesysTransaction.getOutput(0));
+    	myTransaction.addInput(input0);
+    	
+    	final TransactionOutput output0 = new TransactionOutput(0,10,toKey0.getPublicKey());
+    	final TransactionOutput output1 = new TransactionOutput(1,10,toKey1.getPublicKey());
+    	myTransaction.addOutput(output0);
+    	myTransaction.addOutput(output0);
+
+    	miner.addTransaction(myTransaction);
+    	
+    	logger.info("moneyMoved");
+    	
+    	final String txnJson = gson.toJson(myTransaction);
+		logger.info(txnJson);
+	
+    }
     
 	/**
      * Create the test case
