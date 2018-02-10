@@ -24,6 +24,9 @@ public class JsonTester extends TestCase {
     	logger.info("Working");
     	
     	final Wallet utilityWallet = new Wallet("Utility Wallet");
+    	
+    	// FIXME generate real keys
+    	
     	final KeyPair genesysKey = utilityWallet.generateKeyPair("genesysKeyPair");
     	final KeyPair minerKey = utilityWallet.generateKeyPair("minerKeyPair");
     	

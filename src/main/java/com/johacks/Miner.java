@@ -52,11 +52,11 @@ public class Miner {
 	}
 	
 	public void validateTransaction(Transaction txn) {
-		// todo check it has an input
-		// todo check it has an output
-		// todo check the input signature
-		// todo check the input is exactly spent
-		// todo confirmation fees for this transaction
+		// TODO check it has an input
+		// TODO check it has an output
+		// TODO check the input signature
+		// TODO check the input is exactly spent
+		// TODO confirmation fees for this transaction
 	}
 	
 	public void confirmWipTransactions() {
@@ -67,8 +67,8 @@ public class Miner {
 			logger.info("WIP txn Confirmed: "+txnAsJSON);
 		}
 		
-		// todo fees for creating a block
-		// todo generate a hash with enough zeros via nonce incrementing
+		// TODO fees for creating a block
+		// FIXME generate a hash with enough zeros via nonce incrementing
 
 		final String blockAsJSON = gson.toJson(newBlock);
 		logger.info("Confirmed new block:"+blockAsJSON);
