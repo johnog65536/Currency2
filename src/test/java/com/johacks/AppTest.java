@@ -18,13 +18,14 @@ public class AppTest  extends TestCase
     public void testApp()
     {
     	logger.info("Started testing");
-    	final Wallet genesysWallet = new Wallet("Genesys Wallet");
+    	final Wallet utilityWallet = new Wallet("Utility Wallet");
+    	final KeyPair genesysKey = utilityWallet.generateKeyPair("genesysKeyPair");
+    	final KeyPair minerKey = utilityWallet.generateKeyPair("minerKeyPair");
+    	
     	final Wallet fromWallet = new Wallet("My Source Wallet");
-    	final Wallet toWallet = new Wallet("My Destination Wallet");    	
-    	logger.info("wallets created: "); 
-
-    	final KeyPair genesysKey = genesysWallet.generateKeyPair("genesysKeyPair");
     	final KeyPair fromKey = fromWallet.generateKeyPair("myFromKeyPair");
+    	
+    	final Wallet toWallet = new Wallet("My Destination Wallet");    	
     	final KeyPair toKey0 = toWallet.generateKeyPair("myToKeyPair 0");
     	final KeyPair toKey1 = toWallet.generateKeyPair("myToKeyPair 1");
     	
@@ -34,8 +35,7 @@ public class AppTest  extends TestCase
     	TransactionOutput genesysOutput = new TransactionOutput(0,1000,genesysKey.getPublicKey());
     	genesysTransaction.addOutput(genesysOutput);
     	
-    	final Miner miner = new Miner();
-    	miner.initialise(genesysTransaction);
+    	final Miner miner = new Miner(genesysTransaction,minerKey);
     	
     	logger.info("miner intialised with genesys transaction");
     	
@@ -51,7 +51,7 @@ public class AppTest  extends TestCase
     	logger.info("first transaction created");
     	
     	miner.addTransaction(firstTransaction);
-    	miner.mine();
+    	miner.confirmWipTransactions();
 
     	logger.info("completed first set of mining");
     	
@@ -59,7 +59,7 @@ public class AppTest  extends TestCase
     	moveMoney(genesysTransaction,toKey0,toKey1,miner);
     	moveMoney(firstTransaction,toKey0,toKey1,miner);
 
-    	miner.mine();
+    	miner.confirmWipTransactions();
 
     	
     	logger.info("completed second set of mining");

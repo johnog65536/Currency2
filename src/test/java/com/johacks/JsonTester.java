@@ -23,12 +23,14 @@ public class JsonTester extends TestCase {
     {
     	logger.info("Working");
     	
-    	final Wallet genesysWallet = new Wallet("Genesys Wallet");
+    	final Wallet utilityWallet = new Wallet("Utility Wallet");
+    	final KeyPair genesysKey = utilityWallet.generateKeyPair("genesysKeyPair");
+    	final KeyPair minerKey = utilityWallet.generateKeyPair("minerKeyPair");
+    	
     	final Wallet fromWallet = new Wallet("My Source Wallet");
-    	final Wallet toWallet = new Wallet("My Destination Wallet");    	
-
-    	final KeyPair genesysKey = genesysWallet.generateKeyPair("genesysKeyPair");
     	final KeyPair fromKey = fromWallet.generateKeyPair("myFromKeyPair");
+    	
+    	final Wallet toWallet = new Wallet("My Destination Wallet");    	
     	final KeyPair toKey0 = toWallet.generateKeyPair("myToKeyPair 0");
     	final KeyPair toKey1 = toWallet.generateKeyPair("myToKeyPair 1");
     	    	
@@ -36,10 +38,8 @@ public class JsonTester extends TestCase {
     	TransactionOutput genesysOutput = new TransactionOutput(0,1000,genesysKey.getPublicKey());
     	genesysTransaction.addOutput(genesysOutput);
     	
-    	final Miner miner = new Miner();
-    	miner.initialise(genesysTransaction);
-    	
-    	
+    	final Miner miner = new Miner(genesysTransaction,minerKey);
+  
 		final String genesysJson = gson.toJson(genesysTransaction);
 		
 		final Transaction firstTransaction = new Transaction();
@@ -55,13 +55,13 @@ public class JsonTester extends TestCase {
 		logger.info(firstTxnJson);
 		
     	miner.addTransaction(firstTransaction);
-    	miner.mine();
+    	miner.confirmWipTransactions();
 
     	moveMoney(genesysTransaction,toKey0,toKey1,miner);
     	moveMoney(genesysTransaction,toKey0,toKey1,miner);
     	moveMoney(firstTransaction,toKey0,toKey1,miner);
 
-    	miner.mine();
+    	miner.confirmWipTransactions();
 
     	logger.info("completed second set of mining");
 

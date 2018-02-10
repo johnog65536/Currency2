@@ -7,22 +7,39 @@ import org.apache.logging.log4j.Logger;
 
 public class Miner {
 	private static final Logger logger = LogManager.getLogger("MinerLogger");
-	private BlockChain blockChain;
+	private final BlockChain blockChain;
+	private final KeyPair minerKey;	
+	private ArrayList<Transaction> wipTransactions;
 	
-	private Transaction genesysTransaction =null;
-	
-	private ArrayList<Transaction> wipTransactions=null;
-	
-	public void initialise(Transaction gen) {
-		blockChain=new BlockChain();
-		genesysTransaction=gen;
-		
-		final Block firstBlock = new Block();
-		firstBlock.addTransaction(genesysTransaction);
-		blockChain.addBlock(firstBlock);
-		logger.info("added first block to the chain");
-		
+	/** Can create a miner either from an existing BlockChain or from new
+	 *  Either way, needs the keypair for miner fees
+	 * @param blockChain
+	 * @param minerKey
+	 */
+	public Miner(BlockChain blockChain,KeyPair minerKey) {
+		this.blockChain=blockChain;
+		this.minerKey=minerKey;
 		wipTransactions=new ArrayList<Transaction>();
+
+	}
+
+	/** Can create a miner either from an existing BlockChain or from new
+	 *  Either way, needs the keypair for miner fees
+	 * @param genesysTransaction
+	 * @param minerKey
+	 */
+	public Miner(Transaction genesysTransaction, KeyPair minerKey) {
+		this.blockChain=new BlockChain();
+		this.minerKey=minerKey;
+		wipTransactions=new ArrayList<Transaction>();
+		
+		// bypasses validation for genesys
+		wipTransactions.add(genesysTransaction);
+		
+		// get block 0 onto the chain
+		confirmWipTransactions();
+		
+		logger.info("added first block to the chain");
 	}
 	
 	public void addTransaction (Transaction txn) {
@@ -31,25 +48,28 @@ public class Miner {
 	}
 	
 	public void validateTransaction(Transaction txn) {
-		// check it has an input
-		// check it has an output
-		// check the input signature
-		// check the input is exactly spent
-		// todo miner fees
+		// todo check it has an input
+		// todo check it has an output
+		// todo check the input signature
+		// todo check the input is exactly spent
+		// todo confirmation fees for this transaction
 	}
 	
-	public void mine() {
+	public void confirmWipTransactions() {
 		final Block newBlock = new Block();
 		for (Transaction txn: wipTransactions) {
 			newBlock.addTransaction(txn);
 			logger.info("mined: "+txn);
 		}
 		
-		//todo miner fees
+		// todo fees for creating a block
+		// todo generate a hash with enough zeros via nonce incrementing
+		
 		blockChain.addBlock(newBlock);
 		
 		logger.info("added new block to the chain");
 		
+		// clear out WIP
 		wipTransactions=new ArrayList<Transaction>();
 	}
 }
