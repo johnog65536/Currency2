@@ -1,6 +1,7 @@
 package com.johacks;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,6 +17,8 @@ public class Miner {
 	private final BlockChain blockChain;
 	private final KeyPair minerKey;	
 	private ArrayList<Transaction> wipTransactions;
+	
+	private final static String REQUIRED_HASH_PREFIX = "000";
 	
 	/** Can create a miner either from an existing BlockChain or from new
 	 *  Either way, needs the keypair for miner fees
@@ -68,10 +71,25 @@ public class Miner {
 		}
 		
 		// TODO fees for creating a block
-		// FIXME generate a hash with enough zeros via nonce incrementing
-
-		final String blockAsJSON = gson.toJson(newBlock);
-		logger.info("Confirmed new block:"+blockAsJSON);
+		// TODO abort mining if receive a new block from different miner (threads!)
+		boolean mined=false;
+		int nonce=-1;
+		String hash="";
+		newBlock.setMinedBy(minerKey.getPublicKey());
+	    String blockAsJSON;;
+		while (! mined) {
+			nonce++;
+			newBlock.setNonce(nonce);
+			newBlock.setConfirmationTime(new Date());
+			blockAsJSON = gson.toJson(newBlock);
+			hash = CryptoUtils.calcHash(blockAsJSON);
+			mined= hash.startsWith(REQUIRED_HASH_PREFIX);
+		}
+		
+		newBlock.setHash(hash);
+		
+		final String minedBlockAsJSON = gson.toJson(newBlock);
+		logger.info("Confirmed new block:"+minedBlockAsJSON);
 		
 		blockChain.addBlock(newBlock);
 		

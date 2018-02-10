@@ -11,7 +11,7 @@ public class Block {
 	private final ArrayList<Transaction> transactions = new ArrayList<Transaction>();
 	private int nonce;
 	private String hash;
-	private KeyPair minedBy;
+	private String minedBy;
 	private int index;
 	private int prevIndex;
 	private Date confirmationTime;
@@ -40,11 +40,11 @@ public class Block {
 		this.hash = hash;
 	}
 
-	public KeyPair getMinedBy() {
+	public String getMinedBy() {
 		return minedBy;
 	}
 
-	public void setMinedBy(KeyPair minedBy) {
+	public void setMinedBy(String minedBy) {
 		this.minedBy = minedBy;
 	}
 
