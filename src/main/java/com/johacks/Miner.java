@@ -5,8 +5,14 @@ import java.util.ArrayList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 public class Miner {
 	private static final Logger logger = LogManager.getLogger("MinerLogger");
+	private final GsonBuilder builder = new GsonBuilder();
+	private final Gson gson = builder.create();
+
 	private final BlockChain blockChain;
 	private final KeyPair minerKey;	
 	private ArrayList<Transaction> wipTransactions;
@@ -64,10 +70,11 @@ public class Miner {
 		
 		// todo fees for creating a block
 		// todo generate a hash with enough zeros via nonce incrementing
+
+		final String blockAsJSON = gson.toJson(newBlock);
+		logger.info("Confirmed new block:"+blockAsJSON);
 		
 		blockChain.addBlock(newBlock);
-		
-		logger.info("added new block to the chain");
 		
 		// clear out WIP
 		wipTransactions=new ArrayList<Transaction>();

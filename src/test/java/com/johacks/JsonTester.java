@@ -35,12 +35,10 @@ public class JsonTester extends TestCase {
     	final KeyPair toKey1 = toWallet.generateKeyPair("myToKeyPair 1");
     	    	
     	final Transaction genesysTransaction = new Transaction();
-    	TransactionOutput genesysOutput = new TransactionOutput(0,1000,genesysKey.getPublicKey());
+    	final TransactionOutput genesysOutput = new TransactionOutput(0,1000,genesysKey.getPublicKey());
     	genesysTransaction.addOutput(genesysOutput);
     	
     	final Miner miner = new Miner(genesysTransaction,minerKey);
-  
-		final String genesysJson = gson.toJson(genesysTransaction);
 		
 		final Transaction firstTransaction = new Transaction();
     	final TransactionInput input0= new TransactionInput(0,genesysTransaction.getOutput(0));
