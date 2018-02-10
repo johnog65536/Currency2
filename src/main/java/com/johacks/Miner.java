@@ -44,8 +44,6 @@ public class Miner {
 		
 		// get block 0 onto the chain
 		confirmWipTransactions();
-		
-		logger.info("added first block to the chain");
 	}
 	
 	public void addTransaction (Transaction txn) {
@@ -65,7 +63,8 @@ public class Miner {
 		final Block newBlock = new Block();
 		for (Transaction txn: wipTransactions) {
 			newBlock.addTransaction(txn);
-			logger.info("mined: "+txn);
+			final String txnAsJSON = gson.toJson(txn);
+			logger.info("WIP txn Confirmed: "+txnAsJSON);
 		}
 		
 		// todo fees for creating a block

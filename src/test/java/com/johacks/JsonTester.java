@@ -47,11 +47,7 @@ public class JsonTester extends TestCase {
     	final TransactionOutput output0 = new TransactionOutput(0,50,toKey0.getPublicKey());
     	final TransactionOutput output1 = new TransactionOutput(1,50,toKey1.getPublicKey());
     	firstTransaction.addOutput(output0);
-    	firstTransaction.addOutput(output0);
-    	
-		final String firstTxnJson = gson.toJson(genesysTransaction);
-		logger.info(firstTxnJson);
-		
+    	firstTransaction.addOutput(output0);		
     	miner.addTransaction(firstTransaction);
     	miner.confirmWipTransactions();
 
@@ -61,13 +57,8 @@ public class JsonTester extends TestCase {
 
     	miner.confirmWipTransactions();
 
-    	logger.info("completed second set of mining");
-
-		
+    	logger.info("completed second set of mining");	
     }
-    
-    
-    
         
     private void moveMoney(Transaction genesysTransaction,KeyPair toKey0,KeyPair toKey1,Miner miner) {
     	final Transaction myTransaction = new Transaction();
@@ -81,10 +72,6 @@ public class JsonTester extends TestCase {
     	myTransaction.addOutput(output0);
 
     	miner.addTransaction(myTransaction);
-    	
- 
-    	final String txnJson = gson.toJson(myTransaction);
-		logger.info(txnJson);
 	
     }
     
