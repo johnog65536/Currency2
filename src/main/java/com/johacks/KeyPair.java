@@ -1,16 +1,19 @@
 package com.johacks;
 
+import java.security.NoSuchAlgorithmException;
+
 public class KeyPair {
 	final private String name;
 	final private String publicKey;
 	final private String privateKey;
 	
-	public KeyPair(String name) {
+	public KeyPair(String name) throws NoSuchAlgorithmException {
 		this.name=name;
 		
-		// todo - actual keys not strings
-		publicKey="Public:"+name;
-		privateKey="Private:"+name;
+		// FIXME - actual keys not strings
+		java.security.KeyPair pair = CryptoUtils.getKeyPair();
+		publicKey=CryptoUtils.utfToBase64(pair.getPublic().getEncoded());
+		privateKey=CryptoUtils.utfToBase64(pair.getPrivate().getEncoded());
 	}
 
 	public String getName() {

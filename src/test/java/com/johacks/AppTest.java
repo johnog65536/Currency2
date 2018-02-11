@@ -4,6 +4,8 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import java.security.NoSuchAlgorithmException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,8 +16,9 @@ public class AppTest  extends TestCase
 
     /**
      * Rigourous Test :-)
+     * @throws NoSuchAlgorithmException 
      */
-    public void testApp()
+    public void testApp() throws NoSuchAlgorithmException
     {
     	logger.info("Started testing");
     	final Wallet utilityWallet = new Wallet("Utility Wallet");
@@ -32,7 +35,8 @@ public class AppTest  extends TestCase
     	logger.info("Keys created");
     	
     	final Transaction genesysTransaction = new Transaction();
-    	final TransactionOutput genesysOutput = new TransactionOutput(0,1000,genesysKey.getPublicKey());
+    	//todo supply proof
+    	final TransactionOutput genesysOutput = new TransactionOutput(0,1000,genesysKey.getPublicKey(),"");
     	genesysTransaction.addOutput(genesysOutput);
     	
     	final Miner miner = new Miner(genesysTransaction,minerKey);
@@ -43,8 +47,9 @@ public class AppTest  extends TestCase
     	final TransactionInput input0= new TransactionInput(0,genesysTransaction.getOutput(0));
     	firstTransaction.addInput(input0);
     	
-    	final TransactionOutput output0 = new TransactionOutput(0,50,toKey0.getPublicKey());
-    	final TransactionOutput output1 = new TransactionOutput(1,50,toKey1.getPublicKey());
+    	//todo supply proof
+    	final TransactionOutput output0 = new TransactionOutput(0,50,toKey0.getPublicKey(),"");
+    	final TransactionOutput output1 = new TransactionOutput(1,50,toKey1.getPublicKey(),"");
     	firstTransaction.addOutput(output0);
     	firstTransaction.addOutput(output0);
     	
@@ -71,8 +76,9 @@ public class AppTest  extends TestCase
     	final TransactionInput input0= new TransactionInput(0,genesysTransaction.getOutput(0));
     	myTransaction.addInput(input0);
     	
-    	final TransactionOutput output0 = new TransactionOutput(0,10,toKey0.getPublicKey());
-    	final TransactionOutput output1 = new TransactionOutput(1,10,toKey1.getPublicKey());
+    	//todo supply proof
+    	final TransactionOutput output0 = new TransactionOutput(0,10,toKey0.getPublicKey(),"");
+    	final TransactionOutput output1 = new TransactionOutput(1,10,toKey1.getPublicKey(),"");
     	myTransaction.addOutput(output0);
     	myTransaction.addOutput(output0);
 

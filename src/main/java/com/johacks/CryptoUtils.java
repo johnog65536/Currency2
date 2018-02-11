@@ -50,15 +50,26 @@ public class CryptoUtils {
 		return result;
 	}
 
-
-	/*
-	public static boolean verifySignature(String messageToVerify, String messageSignature, CurrencyKeyPair keypair)
-			throws NoSuchAlgorithmException, InvalidKeyException, UnsupportedEncodingException, SignatureException {
-
-		PublicKey pubKey = keypair.getKeyPair().getPublic();
-
-		return verifySignature(messageToVerify, messageSignature, pubKey);
+	public static KeyPair getKeyPair() throws NoSuchAlgorithmException {
+		KeyPairGenerator keyGen=null;
+		keyGen = KeyPairGenerator.getInstance(KEY_TYPE);
+        keyGen.initialize(512);
+        return keyGen.genKeyPair();
 	}
+
+
+	public static String utfToBase64(byte[] bytes) {
+		String rtnVal = Base64.getEncoder().encodeToString(bytes);
+		return rtnVal;
+	}
+	
+	public static byte[] Base64ToUTF(byte[] srcBytes) {
+		byte[] decodedBytes = Base64.getDecoder().decode(srcBytes);
+		return decodedBytes;
+	}
+
+	
+
 
 	public static boolean verifySignature(String messageToVerify, String messageSignature, PublicKey pubKey)
 			throws NoSuchAlgorithmException, InvalidKeyException, UnsupportedEncodingException, SignatureException {
@@ -81,12 +92,13 @@ public class CryptoUtils {
 		return stringToCovert.getBytes(BYTES_ENCODING);
 	}
 
-	public static String signMessage(String thingToSign, CurrencyKeyPair keypair)
-			throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, UnsupportedEncodingException {
+	public static String signMessage(String thingToSign, String privateKeyString) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, UnsupportedEncodingException, InvalidKeySpecException {
 		byte[] data = getBytes(thingToSign);
 
-		Signature sig = Signature.getInstance(HASH_ALGORITHM);
-		sig.initSign(keypair.getKeyPair().getPrivate());
+		final Signature sig = Signature.getInstance(HASH_ALGORITHM);
+		final PrivateKey privKey=generatePrivKey(privateKeyString);
+				
+		sig.initSign(privKey);
 
 		sig.update(data);
 		byte[] signatureBytes = sig.sign();
@@ -98,16 +110,37 @@ public class CryptoUtils {
 		return signatureAsUTF8;
 	}
 
-	public static String utfToBase64(byte[] bytes) {
-		String rtnVal = Base64.getEncoder().encodeToString(bytes);
-		return rtnVal;
+	public static PrivateKey generatePrivKey (String inputString) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeySpecException {
+		byte[] encodedByteKey = getBytes(inputString);
+		byte[] byteKey=Base64ToUTF(encodedByteKey);
+		PKCS8EncodedKeySpec X509privateKey = new PKCS8EncodedKeySpec(byteKey); 
+		KeyFactory kf = KeyFactory.getInstance(KEY_TYPE); 
+		
+		return kf.generatePrivate(X509privateKey);  		
 	}
-	
-	public static byte[] Base64ToUTF(byte[] srcBytes) {
-		byte[] decodedBytes = Base64.getDecoder().decode(srcBytes);
-		return decodedBytes;
+
+
+	public static PublicKey generatePubKey (String inputString) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeySpecException {
+		byte[] encodedByteKey = getBytes(inputString);
+		byte[] byteKey=Base64ToUTF(encodedByteKey);
+		X509EncodedKeySpec X509publicKey = new X509EncodedKeySpec(byteKey); 
+		KeyFactory kf = KeyFactory.getInstance(KEY_TYPE); 
+		
+		return kf.generatePublic(X509publicKey);  		
 	}
+
 	
+	/*
+
+
+	public static boolean verifySignature(String messageToVerify, String messageSignature, CurrencyKeyPair keypair)
+			throws NoSuchAlgorithmException, InvalidKeyException, UnsupportedEncodingException, SignatureException {
+
+		PublicKey pubKey = keypair.getKeyPair().getPublic();
+
+		return verifySignature(messageToVerify, messageSignature, pubKey);
+	}
+		
 	public static boolean validateKeyPair(PublicKey pubKey, CurrencyKeyPair keyPair)
 			throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, UnsupportedEncodingException {
 		String THING_TO_SIGN = "Something";
@@ -135,14 +168,6 @@ public class CryptoUtils {
 		return kf.generatePublic(X509publicKey);  		
 	}
 
-	public static PrivateKey generatePrivKey (String inputString) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeySpecException {
-		byte[] encodedByteKey = getBytes(inputString);
-		byte[] byteKey=Base64ToUTF(encodedByteKey);
-		PKCS8EncodedKeySpec X509privateKey = new PKCS8EncodedKeySpec(byteKey); 
-		KeyFactory kf = KeyFactory.getInstance(KEY_TYPE); 
-		
-		return kf.generatePrivate(X509privateKey);  		
-	}
 	
 	public static KeyPair getKeyPair() throws NoSuchAlgorithmException {
 		KeyPairGenerator keyGen=null;

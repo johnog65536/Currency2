@@ -1,5 +1,6 @@
 package com.johacks;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 public class Transaction {
@@ -19,5 +20,9 @@ public class Transaction {
 	}
 	public TransactionInput getInput(int index) {
 		return inputs.get(new Integer(index));
+	}
+	
+	public Collection<TransactionOutput> retreiveOutputs(){
+		return outputs.values();
 	}
 }

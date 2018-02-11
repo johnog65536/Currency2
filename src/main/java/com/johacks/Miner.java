@@ -1,5 +1,11 @@
 package com.johacks;
 
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.SignatureException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -60,6 +66,35 @@ public class Miner {
 		// TODO check the input signature
 		// TODO check the input is exactly spent
 		// TODO confirmation fees for this transaction
+		
+		validateOutputs(txn);
+	}
+	
+	private void validateOutputs(Transaction txn) {
+		for (TransactionOutput output : txn.retreiveOutputs()) {
+			validateSignture(output);
+		}
+	}
+	private void validateSignture(TransactionOutput output) {
+		logger.info("validating an output");
+		
+		/*
+		 *     private String getProofString(int blockId, int txnId, int outputId, String destPublic, Wallet wallet, String keyname, double value) throws InvalidKeyException, NoSuchAlgorithmException, SignatureException, UnsupportedEncodingException, InvalidKeySpecException {
+    	final Proof outputProof=new Proof(blockId,txnId,outputId,destPublic,value);
+    	final String destPrivate = wallet.getKeyPair(keyname).getPrivateKey();
+    	final String jsonProof = gson.toJson(outputProof);
+    	final String outputProofString = CryptoUtils.signMessage(jsonProof,destPrivate);
+    	
+    	// FIXME - validate signature - needs porting to the miner next
+    	final String pubKeyAsString=wallet.getKeyPair(keyname).getPublicKey();
+    	final PublicKey pubKey=CryptoUtils.generatePubKey(pubKeyAsString);
+    	final boolean validSignature = CryptoUtils.verifySignature(jsonProof, outputProofString, pubKey);
+    	logger.info("Signature Validation:"+validSignature);
+    	
+    	logger.info("Proof: JSON=" + jsonProof + "    signature="+ outputProofString);
+    	return outputProofString;
+    }
+		 */
 	}
 	
 	public void confirmWipTransactions() {

@@ -1,5 +1,6 @@
 package com.johacks;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 public class Wallet {
@@ -19,7 +20,7 @@ public class Wallet {
 		this.name = name;
 	}
 
-	public KeyPair generateKeyPair(String name) {
+	public KeyPair generateKeyPair(String name) throws NoSuchAlgorithmException {
 		final KeyPair keypair = new KeyPair(name);
 		keyPairs.put(name,keypair);
 		return keypair;
@@ -28,6 +29,10 @@ public class Wallet {
 	@Override
 	public String toString() {
 		return "Wallet [name=" + name + "]" ;
+	}
+
+	public KeyPair getKeyPair(String name) {
+		return keyPairs.get(name);
 	}
 	
 	
