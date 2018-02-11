@@ -25,4 +25,8 @@ public class Transaction {
 	public Collection<TransactionOutput> retreiveOutputs(){
 		return outputs.values();
 	}
+	
+	public Collection<TransactionInput> retreiveInputs(){
+		return inputs.values();
+	}
 }

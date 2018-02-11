@@ -55,27 +55,56 @@ public class Miner {
 		confirmWipTransactions();
 	}
 	
-	public void addTransaction (Transaction txn) {
+	public void addTransaction (Transaction txn) throws InvalidKeyException, UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException {
 		validateTransaction(txn);
 		wipTransactions.add(txn);
 	}
 	
-	public void validateTransaction(Transaction txn) {
+	public void validateTransaction(Transaction txn) throws InvalidKeyException, UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException {
 		// TODO check it has an input
 		// TODO check it has an output
 		// TODO check the input signature
 		// TODO check the input is exactly spent
 		// TODO confirmation fees for this transaction
 		
+		
+		validateInputs(txn);
 		validateOutputs(txn);
+	}
+	
+	private void validateInputs(Transaction txn) throws InvalidKeyException, UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException {
+		for (TransactionInput input : txn.retreiveInputs()) {
+			
+			//FIXME check the signature on this input points as the pub key on this output
+			validateInputSignture(input);
+		}
 	}
 	
 	private void validateOutputs(Transaction txn) {
 		for (TransactionOutput output : txn.retreiveOutputs()) {
-			validateSignture(output);
+			
+			//FIXME check there is a signature on this output that points at something
+			validateOutputSignture(output);
 		}
 	}
-	private void validateSignture(TransactionOutput output) {
+
+	private void validateInputSignture(TransactionInput input) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, SignatureException {
+		logger.info("validating an input");
+		final TransactionOutput srcOutput=input.getOutput();
+		final String srcTxnProof = srcOutput.getProof();
+		final String srcOutputKeyString=srcOutput.getPublicKey();
+		final PublicKey srcOutputKey=CryptoUtils.generatePubKey(srcOutputKeyString);
+
+		//FIXME this has hardcoded outputs 0,0,1  needs to use the real values from the mined block
+		
+    	final Proof outputProof=new Proof(0,0,1,srcOutputKeyString,srcOutput.getValue());
+    	final String jsonProof = gson.toJson(outputProof);
+		
+		final boolean valid = CryptoUtils.verifySignature(jsonProof, srcTxnProof, srcOutputKey);
+		logger.info("======srcTxnProof="+srcTxnProof);
+	}
+	
+	private void validateOutputSignture(TransactionOutput output) {
 		logger.info("validating an output");
 		
 		/*

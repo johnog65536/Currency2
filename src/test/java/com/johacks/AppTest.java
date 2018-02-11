@@ -4,7 +4,11 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
+import java.security.spec.InvalidKeySpecException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,8 +21,12 @@ public class AppTest  extends TestCase
     /**
      * Rigourous Test :-)
      * @throws NoSuchAlgorithmException 
+     * @throws SignatureException 
+     * @throws InvalidKeySpecException 
+     * @throws UnsupportedEncodingException 
+     * @throws InvalidKeyException 
      */
-    public void testApp() throws NoSuchAlgorithmException
+    public void testApp() throws NoSuchAlgorithmException, InvalidKeyException, UnsupportedEncodingException, InvalidKeySpecException, SignatureException
     {
     	logger.info("Started testing");
     	final Wallet utilityWallet = new Wallet("Utility Wallet");
@@ -70,7 +78,7 @@ public class AppTest  extends TestCase
     	logger.info("completed second set of mining");
     }
     
-    private void moveMoney(Transaction genesysTransaction,KeyPair toKey0,KeyPair toKey1,Miner miner) {
+    private void moveMoney(Transaction genesysTransaction,KeyPair toKey0,KeyPair toKey1,Miner miner) throws InvalidKeyException, UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException {
     	final Transaction myTransaction = new Transaction();
     	
     	final TransactionInput input0= new TransactionInput(0,genesysTransaction.getOutput(0));
